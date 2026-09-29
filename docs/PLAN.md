@@ -1,7 +1,48 @@
 # Travel blog: plan
 
 ## Goal
-Find every holiday in my Apple Photos library, pick the best photos from each one, and have Claude write a draft post per trip. I review each draft and merge it to publish.
+Build a side income that pays for more holidays. Money comes from affiliate links (places we stayed, tours, gear we used), then display ads, then our own products.
+
+To get there: find every holiday in the Apple Photos library, pick the best photos, and have Claude draft **search-focused** posts (stay reviews, itineraries, where-to-stay guides, packing lists) from what we actually did. We review each draft and add our own details before merging to publish.
+
+## Monetisation strategy
+
+### Why first-hand content matters
+Google has cut traffic to thin and AI-mass-produced travel content since 2023, and AI answers in search take more clicks every year. What still ranks and converts is proof we were really there: our own photos, what we actually paid, specific likes and gripes. So Claude writes the first draft and we add the details only we know. Every post needs at least one of these before it's published.
+
+### One trip → many posts
+Each trip should become several posts aimed at things people search for, not one diary entry:
+| Post type | Example | Search intent | Money |
+|---|---|---|---|
+| Stay review | "Hotel X review: honest thoughts after 4 nights" | booking | accommodation affiliate (highest) |
+| Where to stay | "Where to stay in Queenstown: areas + picks" | booking | accommodation + map widget |
+| Itinerary | "5 days in Rarotonga itinerary" | planning | tours, car hire, insurance |
+| Things to do | "Best day trips from Kyoto" | planning | tours (GetYourGuide/Viator) |
+| Gear / packing | "What we packed for Japan in winter" | buying | Amazon & retailer affiliates |
+| Trip story | the diary-style post | brand/email | internal links to the above |
+
+### Income streams, in the order to add them
+1. **Accommodation affiliates:** Stay22 (one embed covers Booking.com, Expedia, Hotels.com and more, good for small sites), Booking.com and Expedia Group partner programs, Agoda. *Airbnb no longer runs an affiliate program.*
+2. **Tours and activities:** GetYourGuide, Viator, Klook (strong in Asia).
+3. **Travel services:** travel insurance, car hire (e.g. DiscoverCars), eSIMs (e.g. Airalo). These often pay a flat fee per sale.
+4. **Products:** Amazon Associates (pick the store your readers buy from: .com / .com.au), plus direct programs from gear brands we actually use.
+5. **Display ads**, once traffic justifies it: AdSense or Ezoic (no traffic minimum) → Mediavine / Raptive (need tens of thousands of monthly sessions; check their current minimums).
+6. **Own products:** paid itineraries or Google Maps lists, printable guides, Lightroom presets made from our editing. Best margin, add later.
+7. **Owned audience:** an email list from day one, plus Pinterest (still a big traffic source for travel) and short videos made from the same photos.
+
+### Built into the site
+- Structured `stays` / `products` / `activities` data in each post's frontmatter → `<StayCard>`, `<ProductCard>` components with affiliate buttons
+- `/go/<slug>` redirect links → click tracking in one place, and a dead or changed affiliate link gets fixed once
+- schema.org `Review` / `LodgingBusiness` markup, fast pages (Core Web Vitals), sitemap
+- Affiliate disclosure on every page with links (required by NZ Fair Trading Act and FTC rules for US readers)
+- Analytics: which posts and links earn money, so we write more of those
+
+### Finding what we stayed at and used
+- **Photos:** the GPS location of photos taken between ~10pm and 8am usually shows where we slept
+- **Gmail (connector is available):** booking confirmations (Booking.com, Airbnb, hotels, airlines, tours) and Amazon orders give exact names, dates and prices paid. That's the best source for stay reviews and gear lists. Only with explicit OK, and only reading receipts and bookings.
+
+### Realistic expectations
+Most travel blogs earn little in year one. Search traffic usually takes 6–12+ months to build. Aim to cover hosting in year 1, then grow from there. A focus helps you rank sooner, e.g. NZ/Pacific trips from a Kiwi point of view, or couples' mid-range stays. Declare the income to IRD.
 
 ## Decisions (2026-09-29)
 - **Photos:** iCloud / Apple Photos. Apple has no public API, so we export locally with `osxphotos`.
@@ -62,9 +103,14 @@ The pipeline runs on the Mac. The library is too big to upload, and the raw phot
 - Resize (e.g. 2400px + thumbnails), convert to WebP/AVIF, **strip all EXIF/GPS**, upload to Vercel Blob
 - Save the resulting URLs in `content/trips/<slug>.json`
 
+### 4b. Match stays and products (`scripts/find-stays`)
+- Work out where we slept each night from the GPS of night-time photos, then cross-check against booking emails in Gmail
+- Look up affiliate links for each stay, tour and product; leave a gap where none exist
+
 ### 5. Draft posts (`scripts/draft-post`)
-- Send Claude the trip metadata, places, dates, chosen photos and captions, plus any notes from you ("rained all week", "best ramen ever")
-- It writes MDX with frontmatter (title, dates, countries, hero, gallery) in a consistent voice
+- Send Claude the trip metadata, stays, products, chosen photos and captions, plus our notes ("rained all week", "best ramen ever", what we paid)
+- It plans a set of search-focused posts for the trip (see the table above), then writes MDX with frontmatter (title, dates, countries, hero, gallery, stays, products)
+- Each draft marks the places that need our own details with `TODO(us):` markers. Nothing merges while those are left.
 - Each trip gets its own branch and PR, which you edit and merge
 
 ### 6. Launch
@@ -72,6 +118,8 @@ The pipeline runs on the Mac. The library is too big to upload, and the raw phot
 - Later: a "new trip" flow for future holidays (drop photos in, rerun the pipeline)
 
 ## Open questions
+- Focus: what's the angle (NZ/Pacific, couples, budget vs. luxury)?
+- OK to scan Gmail for booking confirmations and orders?
 - Blog name and domain?
 - Should this repo stay public? It'll hold post text and image URLs only, never raw photos.
 - Can people (family, friends) appear in published photos?
