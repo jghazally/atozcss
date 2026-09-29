@@ -1,2 +1,8 @@
-.sass-cache/*
-*.css
+node_modules/
+.next/
+.env*
+.vercel/
+# raw photo exports never go in git
+photos/
+export/
+*.HEIC
