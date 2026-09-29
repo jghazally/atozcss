@@ -27,7 +27,7 @@ Each trip should become several posts aimed at things people search for, not one
 3. **Travel services:** travel insurance, car hire (e.g. DiscoverCars), eSIMs (e.g. Airalo). These often pay a flat fee per sale.
 4. **Products:** Amazon Associates (pick the store your readers buy from: .com / .com.au), plus direct programs from gear brands we actually use.
 5. **Display ads**, once traffic justifies it: AdSense or Ezoic (no traffic minimum) → Mediavine / Raptive (need tens of thousands of monthly sessions; check their current minimums).
-6. **Own products:** paid itineraries or Google Maps lists, printable guides, Lightroom presets made from our editing. Best margin, add later.
+6. **Own products:** itineraries first. Publish each trip as a free day-by-day itinerary post (good for search). Later, sell a fuller version: a PDF plus a Google Maps list with costs, bookings and transport tips. Lightroom presets can come later. Best margin.
 7. **Owned audience:** an email list from day one, plus Pinterest (still a big traffic source for travel) and short videos made from the same photos.
 
 ### Built into the site
@@ -97,7 +97,12 @@ The pipeline runs on the Mac. The library is too big to upload, and the raw phot
 ### 3. Curation (`scripts/curate`)
 - Drop screenshots, receipts, documents and near-duplicates (perceptual hash)
 - Score sharpness and exposure, then ask Claude (vision) to pick a hero shot and 8–15 gallery shots with captions
-- Skip photos where people are the main subject unless you allow them
+- **Family privacy (hard rule):** keep Jeff's wife and son out of published photos
+  - Before exporting, name them in Apple Photos > People. osxphotos writes those names into each photo's sidecar.
+  - Drop any photo where either of them is the subject or their face is large in the frame
+  - If they're small or at the edge of the frame, auto-crop them out. If a crop would ruin the shot, drop it.
+  - Claude vision then checks every photo left for any recognisable person. Anything it flags goes to manual review, never straight to publish.
+  - Strangers: prefer photos without clearly identifiable faces
 
 ### 4. Publish images
 - Resize (e.g. 2400px + thumbnails), convert to WebP/AVIF, **strip all EXIF/GPS**, upload to Vercel Blob
@@ -117,11 +122,11 @@ The pipeline runs on the Mac. The library is too big to upload, and the raw phot
 - Domain, OG images, RSS, sitemap
 - Later: a "new trip" flow for future holidays (drop photos in, rerun the pipeline)
 
+## Focus
+Broad: everywhere we go (NZ, Pacific, Southeast Asia and beyond), with lots of posts per trip. Itineraries are a core format.
+
 ## Open questions
-- Focus: what's the angle (NZ/Pacific, couples, budget vs. luxury)?
-- OK to scan Gmail for booking confirmations and orders?
 - Blog name and domain?
 - Should this repo stay public? It'll hold post text and image URLs only, never raw photos.
-- Can people (family, friends) appear in published photos?
 - Voice: first person, how chatty, and roughly how long per post?
 - Include the trip map / exact places, or keep it at city level?
